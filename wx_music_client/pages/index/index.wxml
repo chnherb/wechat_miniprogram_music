@@ -1,0 +1,127 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="section" id="musicInfos">
+    <text id="appTitle"> All you want are here</text>
+    
+  </view>
+   
+  <view wx:if="{{showContainer}}" class="musicContainer">
+    <view class="section" id="giveMusicName">
+      <input
+        class="musicname"
+        value="{{input}}"
+        placeholder="key words"
+        bindinput="bindMusicNameInput"
+      />
+      <button
+        type="primary"
+        bindtap="bindSearch"
+        disabled="{{searchStatus}}"
+        style="margin:0;"
+      >done</button>
+    </view>
+    <text id="singerinfos">{{audioList[audioIndex].name}} </text>
+    <text id="singerinfos" bindtap="bindShowPic">{{audioList[audioIndex].singer}}</text>
+    <!-- src="{{audioList[audioIndex].picUrl}}" -->
+    <view wx:if="{{!lyricflag}}">
+    <image
+      src="{{audioList[audioIndex].picUrl}}"
+      id="picUrl"
+      style="{{transform}}" 
+      bindtap="bindShowlyric"
+    ></image>
+    </view>
+    <!-- 歌词 -->
+            <view wx:if="{{lyricflag}}" class="song-lyric" >  
+                <!-- 歌词展示 -->
+                    <scroll-view scroll-y="true" style="height: 100%;" scroll-top="80" bindtap="bindShowlyric">
+                        <view class="lyric-item" wx:for="{{lyric}}" wx:for-item="word" wx:key="unique">
+                            <text wx:if="{{word.length>0}}">
+                                {{word}}
+                            </text>
+                        </view>
+                        <view class="lyric-item" wx:if="{{lyric.length<0}}">
+                            <text>歌词努力加载中~~~~~ </text>
+                        </view>
+                    </scroll-view>   
+            </view>
+  </view>
+</view>
+<view wx:if="{{!showContainer}}">
+  <view class="navbar">
+  <text class="item {{currentTab==index ? 'active' : ''}}" wx:for="{{navbar}}" wx:key="{{index}}" data-index="{{index}}" bindtap="onNavbarTap">{{item}}</text>
+  </view>
+  <scroll-view class="list" hidden="{{currentTab!==0}}">
+    <block wx:for="{{findList}}" wx:for-item="song" wx:for-index="index"  wx:key="{{index}}">
+      <view class="songitem {{index % 2 === 1 ? 'even': 'odd' }} {{audioList[audioIndex].id === song.id ? 'current': ''}}" data-src="{{song.picUrl}}">
+        <image class="songitemImage"
+        src="{{song.picUrl}}"
+        alt=""
+        data-musicIndex="{{index}}"
+        bindtap="addMusic"
+      ></image> 
+      <text
+        class="name"
+        data-musicIndex="{{index}}"
+        bindtap="addMusic"
+      >{{song.name}}</text>
+      <text
+        class="album"
+        data-musicIndex="{{index}}"
+        bindtap="addMusic"
+      >{{song.singer}}-{{song.albumName}}</text>
+      <image class="delImage"
+        src="../../images/add.png"
+        alt=""
+        data-musicIndex="{{index}}"
+        bindtap="addsong"
+        ></image> 
+      </view>
+    </block>
+  </scroll-view>
+  <scroll-view class="list" hidden="{{currentTab!==1}}">
+    <block wx:for="{{audioList}}" wx:for-item="song" wx:for-index="index"  wx:key="{{index}}">
+      <view class="songitem {{index % 2 === 1 ? 'even': 'odd' }} {{audioList[audioIndex].id === song.id ? 'current': ''}}" data-src="{{song.picUrl}}">
+        <image class="songitemImage"
+        src="{{song.picUrl}}"
+        alt=""
+        data-musicIndex="{{index}}"
+        bindtap="changeMusic"
+        ></image> 
+      <text
+        class="name"
+        data-musicIndex="{{index}}"
+        bindtap="changeMusic"
+      >{{song.name}}</text>
+      <text
+        class="album"
+        data-musicIndex="{{index}}"
+        bindtap="changeMusic"
+      >{{song.singer}}-{{song.albumName}}</text>
+      <image class="delImage"
+        src="../../images/del.png"
+        alt=""
+        data-musicIndex="{{index}}"
+        bindtap="deletesong"
+        ></image> 
+      </view>
+    </block>
+  </scroll-view>
+</view>
+<view style="height:80px">
+</view>
+<view class="footer">
+  <view class="song-info">
+    <view class="song-name">{{starttime}}</view>
+    <!-- <progress class="song-progress" percent="{{percent}}" activeColor="#07FFA5"/> -->
+    <slider class="song-progress" bindchange="slider1change" value="{{percent}}" activeColor="#07FFA5"/>
+    <view class="song-time">-{{endtime}}</view>
+  </view>
+  <view class="controls">
+    <image src="../../images/{{mode}}.png" class="btn btn-mode" bindtap="switchMode"></image>
+    <image src="../../images/prev.png" class="btn btn-prev" bindtap="bindTapPrev"></image>
+    <image src="../../images/{{pauseStatus === false ? 'pause.png' : 'play.png'}}" class="btn btn-next" bindtap="bindTapPlay"></image>
+    <image src="../../images/next.png" class="btn btn-next" bindtap="bindTapNext"></image>
+    <image src="../../images/list.png" class="btn btn-showlist" bindtap="showList"></image>
+  </view>
+</view>
